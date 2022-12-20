@@ -31,6 +31,4 @@ async def to_code(config):
     source = await cg.get_variable(config[CONF_AUDIO_SOURCE])
     cg.add(var.set_audio_source(source))
 
-
     cg.add(var.set_sensitivity(config[CONF_SENSITIVITY]))
-

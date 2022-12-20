@@ -18,13 +18,13 @@ void I2SAudioSource::setup() {
 
   i2s_config_t i2s_config = {
 	.mode = (i2s_mode_t)(I2S_MODE_MASTER | I2S_MODE_RX | I2S_MODE_PDM),
-	.sample_rate = 16000,
-	.bits_per_sample = I2S_BITS_PER_SAMPLE_16BIT, // is fixed at 12bit, stereo, MSB
+	.sample_rate = audio_frequency_,
+	.bits_per_sample = (i2s_bits_per_sample_t)bits_per_sample_, // is fixed at 12bit, stereo, MSB
 	.channel_format = I2S_CHANNEL_FMT_ALL_RIGHT,
 	.communication_format = I2S_COMM_FORMAT_STAND_I2S,
 	.intr_alloc_flags = ESP_INTR_FLAG_LEVEL1,
-	.dma_buf_count = 6,
-	.dma_buf_len = 60,
+	.dma_buf_count = 16,
+	.dma_buf_len = 256,
   };
 
 
@@ -50,7 +50,7 @@ void I2SAudioSource::setup() {
   }
   
   ESP_LOGV(TAG, "'%s':setting clocks", this->name_.c_str());
-  err = i2s_set_clk(I2S_NUM_0, 16000, I2S_BITS_PER_SAMPLE_16BIT, I2S_CHANNEL_MONO);
+  err = i2s_set_clk(I2S_NUM_0, audio_frequency_, (i2s_bits_per_sample_t)bits_per_sample_, I2S_CHANNEL_MONO);
 
   if( err != ESP_OK){
 	   ESP_LOGE(TAG, "'%s': Received audio setup error: %d", this->name_.c_str(), err);
@@ -61,12 +61,17 @@ void I2SAudioSource::setup() {
 
 void I2SAudioSource::loop() {
   size_t byte_read;
-  i2s_read(I2S_NUM_0, audio_buffer, 1024, &byte_read, 0);
+  i2s_read(I2S_NUM_0, audio_buffer, 10000, &byte_read, 0);
   this->publish_audio(byte_read);
 }
 
 void I2SAudioSource::dump_config() {
-  ESP_LOGCONFIG(TAG, "Audio:");
+  ESP_LOGCONFIG(TAG, "I2S Audio Source:");
+  ESP_LOGCONFIG(TAG, "  LRClk Pin: %d", this->lrclk_pin_);
+  ESP_LOGCONFIG(TAG, "  BClk Pin: %d", this->bclk_pin_);
+  ESP_LOGCONFIG(TAG, "  Din Pin: %d", this->din_pin_);
+  ESP_LOGCONFIG(TAG, "  Audio Frequency: %d", this->audio_frequency_);
+  ESP_LOGCONFIG(TAG, "  Bits Per Sample: %d", this->bits_per_sample_);
 
 }
 

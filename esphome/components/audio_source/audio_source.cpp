@@ -10,7 +10,7 @@ AudioSource::AudioSource() {}
 
 
 void AudioSource::publish_audio(size_t size) {
-  ESP_LOGV(TAG, "'%s': Received new audio data %d", this->name_.c_str(), size);
+  ESP_LOGV(TAG, "'%s': Published new audio data %d", this->name_.c_str(), size);
 	
   this->callback_.call(audio_buffer,size);
 }

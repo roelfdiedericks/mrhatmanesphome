@@ -18,8 +18,6 @@ audio_source_ns = cg.esphome_ns.namespace("audio_source")
 AudioSource = audio_source_ns.class_("AudioSource")
 
 
-
-
 async def setup_audio_source_core_(var, config):
     await setup_entity(var, config)
 
@@ -31,15 +29,7 @@ async def register_audio_source(var, config):
     await setup_audio_source_core_(var, config)
 
 
-AUDIO_SOURCE_SCHEMA = cv.ENTITY_BASE_SCHEMA.extend(
-    {
-        
-    }
-)
-
-
-
-
+AUDIO_SOURCE_SCHEMA = cv.ENTITY_BASE_SCHEMA.extend({})
 
 
 @coroutine_with_priority(100.0)

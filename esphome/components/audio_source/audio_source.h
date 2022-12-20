@@ -36,7 +36,7 @@ class AudioSource : public EntityBase {
    */
   //const uint32_t SAMPLES_PER_SECOND = 16000;
   
-  uint8_t audio_buffer[16000*1*2 / 10];
+  uint8_t audio_buffer[16000*1*2];
   
   /** Publish a new state to the front-end.
    *

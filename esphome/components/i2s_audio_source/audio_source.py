@@ -19,20 +19,18 @@ I2SAudioSource = i2s_audio_source_ns.class_(
 CONF_I2S_DIN_PIN = "i2s_din_pin"
 CONF_I2S_BCLK_PIN = "i2s_bclk_pin"
 CONF_I2S_LRCLK_PIN = "i2s_lrclk_pin"
+CONF_AUDIO_FREQUENCY = "audio_frequency"
+CONF_BITS_PER_SAMPLE = "bits_per_sample"
 
 
 CONFIG_SCHEMA = audio_source.AUDIO_SOURCE_SCHEMA.extend(
     {
         cv.GenerateID(): cv.declare_id(I2SAudioSource),
-        cv.Required(
-            CONF_I2S_DIN_PIN
-        ): pins.internal_gpio_input_pin_number,
-        cv.Required(
-            CONF_I2S_BCLK_PIN
-        ): pins.internal_gpio_output_pin_number,
-        cv.Required(
-            CONF_I2S_LRCLK_PIN
-        ): pins.internal_gpio_output_pin_number,
+        cv.Required(CONF_I2S_DIN_PIN): pins.internal_gpio_input_pin_number,
+        cv.Required(CONF_I2S_BCLK_PIN): pins.internal_gpio_output_pin_number,
+        cv.Required(CONF_I2S_LRCLK_PIN): pins.internal_gpio_output_pin_number,
+        cv.Required(CONF_AUDIO_FREQUENCY): cv.int_,
+        cv.Required(CONF_BITS_PER_SAMPLE): cv.int_,
     }
 )
 
@@ -44,4 +42,5 @@ async def to_code(config):
     cg.add(var.set_din_pin(config[CONF_I2S_DIN_PIN]))
     cg.add(var.set_bclk_pin(config[CONF_I2S_BCLK_PIN]))
     cg.add(var.set_lrclk_pin(config[CONF_I2S_LRCLK_PIN]))
-
+    cg.add(var.set_audio_frequency(config[CONF_AUDIO_FREQUENCY]))
+    cg.add(var.set_bits_per_sample(config[CONF_BITS_PER_SAMPLE]))
