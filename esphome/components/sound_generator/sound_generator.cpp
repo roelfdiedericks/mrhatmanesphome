@@ -16,7 +16,7 @@ void SoundGenerator::setup() {
 
   //time of a full audio buffer 
 
-  int32_t max_samples = AUDIO_STREAM_BUFFER_SIZE /(stream.bits_per_sample/8);
+  int32_t max_samples = (AUDIO_STREAM_BUFFER_SIZE )/(stream.bits_per_sample/8);
   ESP_LOGD(TAG,"max samples = %d", max_samples); 
 
   float full_buffer_time = (float)max_samples/ (float)stream.audio_frequency ;
@@ -26,7 +26,7 @@ void SoundGenerator::setup() {
   ESP_LOGD(TAG,"pitch_time = %f", pitch_time); 
 
   //signwaves per buffer
-  int waves_per_buffer = (int) (full_buffer_time/pitch_time);
+  int waves_per_buffer = floor(full_buffer_time/pitch_time);
 
   ESP_LOGD(TAG,"waves_per_buffer = %d", waves_per_buffer); 
 
@@ -40,7 +40,7 @@ void SoundGenerator::setup() {
   ESP_LOGD(TAG,"buffer_size = %d", buffer_size); 
 
   for(int q = 0; q< buffer_size ; q++){
-    float float_sample = sound_volume_ *  sin(6.28 * waves_per_buffer * ((float) q / (float) max_samples )) ; 
+    float float_sample = sound_volume_ *  sin(6.28318530718 * waves_per_buffer * ((float) q / (float) buffer_size )) ; 
 
       int32_t sample = 0;
 
@@ -61,11 +61,14 @@ void SoundGenerator::setup() {
       default:
         break;
       } 
+
+      //ESP_LOGD(TAG,"%d",((int16_t * )stream.audio_buffer)[q]);
   }
+  ESP_LOGD(TAG,"%d",((int16_t * )stream.audio_buffer)[buffer_size-1]);
 
-  stream.audio_buffer_size = buffer_size;
+  stream.audio_buffer_size = buffer_size*(stream.bits_per_sample/8);
 
-  full_buffer_time_ = (uint32_t)(full_buffer_time *1000.0);
+  full_buffer_time_ = (uint32_t)(((float)buffer_size / (float)stream.audio_frequency  )*1000000.0);
 
   ESP_LOGD(TAG,"%f %d", full_buffer_time , buffer_size); 
 
@@ -73,19 +76,19 @@ void SoundGenerator::setup() {
 
   ESP_LOGD(TAG,"end %f %d", full_buffer_time , buffer_size); 
 
-  next_time_ = millis() +  full_buffer_time_;
+  next_time_ = micros() +  full_buffer_time_;
 
   return;
 }
 
 void SoundGenerator::loop() {
-  while( millis() + full_buffer_time_ > next_time_)
+  while( micros() + full_buffer_time_ > next_time_)
   {
-    ESP_LOGD(TAG,"%d + %d > %d",  millis() , full_buffer_time_ , next_time_); 
-    next_time_ += full_buffer_time_ ;
+    ESP_LOGD(TAG,"%d + %d > %d",  micros() , full_buffer_time_ , next_time_); 
+    next_time_ += full_buffer_time_;
     publish_audio();
   }
-  
+  ESP_LOGD(TAG,"here"); 
 }
 
 void SoundGenerator::dump_config() {

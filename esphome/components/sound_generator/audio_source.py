@@ -29,9 +29,7 @@ CONFIG_SCHEMA = audio_source.AUDIO_SOURCE_SCHEMA.extend(
         cv.Required(CONF_VOLUME): cv.float_,
         cv.Required(CONF_AUDIO_FREQUENCY): cv.int_,
         cv.Required(CONF_BITS_PER_SAMPLE): cv.int_,
-        cv.Optional(CONF_MODE, default="mono"): cv.one_of(
-            *CHANNEL_OPTIONS, lower=True
-        ),
+        cv.Optional(CONF_MODE, default="mono"): cv.one_of(*CHANNEL_OPTIONS, lower=True),
     }
 )
 

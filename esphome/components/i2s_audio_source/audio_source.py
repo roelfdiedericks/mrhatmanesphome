@@ -31,9 +31,7 @@ CONFIG_SCHEMA = audio_source.AUDIO_SOURCE_SCHEMA.extend(
         cv.Required(CONF_I2S_LRCLK_PIN): pins.internal_gpio_output_pin_number,
         cv.Required(CONF_AUDIO_FREQUENCY): cv.int_,
         cv.Required(CONF_BITS_PER_SAMPLE): cv.int_,
-        cv.Optional(CONF_MODE, default="mono"): cv.one_of(
-            *CHANNEL_OPTIONS, lower=True
-        ),
+        cv.Optional(CONF_MODE, default="mono"): cv.one_of(*CHANNEL_OPTIONS, lower=True),
     }
 )
 
