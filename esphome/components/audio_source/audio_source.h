@@ -11,32 +11,28 @@
 namespace esphome {
 namespace audio_source {
 
+  #define AUDIO_STREAM_BUFFER_SIZE 10000
+
+ class  AudioStream{
+  public:
+    uint32_t audio_frequency;
+    uint8_t bits_per_sample;
+    uint8_t channels;
+    uint8_t audio_buffer[AUDIO_STREAM_BUFFER_SIZE];
+    size_t audio_buffer_size;
+    
+    int32_t get_sample(int index, int channel);
+    int32_t get_sample_count();
+
+};
+
 class AudioSource : public EntityBase {
  public:
   explicit AudioSource();
 
-  /** 
-   *  8  bit samples : 1
-   *  16 bit samples : 2
-   *  24 bit samples : 3
-   *  32 bit samples : 4
-   */
-  //const BYTES_PER_SAMPLE = 2;
 
-
-  /** 
-   *  Channel count
-   *  1 Mono
-   *  2 Stereo
-   */
-  //const CHANNEL_CPOUNT = 1;
+  AudioStream stream;
   
-  /** 
-   *  Samples per second
-   */
-  //const uint32_t SAMPLES_PER_SECOND = 16000;
-  
-  uint8_t audio_buffer[16000*1*2];
   
   /** Publish a new state to the front-end.
    *
@@ -44,12 +40,12 @@ class AudioSource : public EntityBase {
    * until it finally lands in the .value member variable and a callback is issued.
    *
    */
-  void publish_audio(size_t size);
+  void publish_audio();
 
   // ========== INTERNAL METHODS ==========
   // (In most use cases you won't need these)
   /// Add a callback that will be called every time a filtered value arrives.
-  void add_audio_callback(std::function<void(uint8_t * , size_t)> &&callback);
+  void add_audio_callback(std::function<void(AudioStream *)> &&callback);
   
 
 
@@ -63,7 +59,7 @@ class AudioSource : public EntityBase {
 
  protected:
  
-  CallbackManager<void(uint8_t * , size_t)> callback_;      ///< Storage for audio buffer callbacks.
+  CallbackManager<void(AudioStream *)> callback_;      ///< Storage for audio buffer callbacks.
                         
 };
 

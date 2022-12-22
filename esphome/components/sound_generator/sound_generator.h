@@ -1,6 +1,5 @@
 #pragma once
 
-#ifdef USE_ESP32_FRAMEWORK_ARDUINO
 
 #include "esphome/components/audio_source/audio_source.h"
 #include "esphome/core/component.h"
@@ -10,9 +9,9 @@
 
 
 namespace esphome {
-namespace i2s_audio_source {
+namespace sound_generator {
 
-class I2SAudioSource : public Component, public audio_source::AudioSource {
+class SoundGenerator : public Component, public audio_source::AudioSource {
  public:
   void setup() override;
   float get_setup_priority() const override { return esphome::setup_priority::HARDWARE; }
@@ -21,23 +20,23 @@ class I2SAudioSource : public Component, public audio_source::AudioSource {
 
   void dump_config() override;
 
-  void set_din_pin(uint8_t pin) { this->din_pin_ = pin; }
-  void set_bclk_pin(uint8_t pin) { this->bclk_pin_ = pin; }
-  void set_lrclk_pin(uint8_t pin) { this->lrclk_pin_ = pin; }
+
+  void set_pitch(uint32_t frequency) { this->sound_pitch_ = frequency;}
+  void set_volume(float volume) { this->sound_volume_ = volume;}
   void set_audio_frequency(uint32_t frequency) { this->stream.audio_frequency = frequency;}
   void set_bits_per_sample(uint8_t bits) { this->stream.bits_per_sample = bits; }
   void set_channels(uint8_t channels) { this->stream.channels = channels; }
 
  protected:
 
-  uint8_t din_pin_{0};
-  uint8_t bclk_pin_;
-  uint8_t lrclk_pin_;
-  
+  uint32_t sound_pitch_;
+  float sound_volume_;
+
+  uint32_t next_time_;
+  uint32_t full_buffer_time_;
 
 };
 
 }  // namespace i2s_audio_source
 }  // namespace esphome
 
-#endif  // USE_ESP32_FRAMEWORK_ARDUINO
