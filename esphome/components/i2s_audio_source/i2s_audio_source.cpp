@@ -17,14 +17,14 @@ void I2SAudioSource::setup() {
   esp_err_t err = ESP_OK;
 
   i2s_config_t i2s_config = {
-	.mode = (i2s_mode_t)(I2S_MODE_MASTER | I2S_MODE_RX | I2S_MODE_PDM),
+	.mode = (i2s_mode_t)(I2S_MODE_MASTER | I2S_MODE_RX ),
 	.sample_rate = stream.audio_frequency,
 	.bits_per_sample = (i2s_bits_per_sample_t)stream.bits_per_sample, // is fixed at 12bit, stereo, MSB
-	.channel_format = I2S_CHANNEL_FMT_ALL_RIGHT,
+	.channel_format = I2S_CHANNEL_FMT_RIGHT_LEFT,
 	.communication_format = I2S_COMM_FORMAT_STAND_I2S,
-	.intr_alloc_flags = ESP_INTR_FLAG_LEVEL1,
-	.dma_buf_count = 16,
-	.dma_buf_len = 256,
+	.intr_alloc_flags = ESP_INTR_FLAG_LEVEL2,
+	.dma_buf_count = 3,
+	.dma_buf_len = 300,
   };
 
 
